@@ -1,8 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { signOut } from "@/app/actions";
 import { useLanguage } from "@/lib/i18n";
-import { GlobeIcon, MusicIcon, SettingIcon, UserIcon } from "@/components/PixelIcons";
+import {
+  GlobeIcon,
+  LogoutIcon,
+  MusicIcon,
+  SettingIcon,
+  UserIcon,
+} from "@/components/PixelIcons";
 
 interface SettingsScreenProps {
   musicOn: boolean;
@@ -22,6 +29,7 @@ export default function SettingsScreen({
   const [nameStatus, setNameStatus] = useState<"idle" | "saving" | "saved" | "failed">(
     "idle"
   );
+  const [confirmLogout, setConfirmLogout] = useState(false);
 
   const handleSaveName = async () => {
     const name = nameDraft.trim();
@@ -131,11 +139,71 @@ export default function SettingsScreen({
         )}
       </section>
 
+      <section className="bg-[#fffdf5] p-4 pixel-frame pixel-shadow">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="grid h-12 w-12 shrink-0 place-items-center border-4 border-black bg-mario-red text-white">
+              <LogoutIcon className="h-7 w-7" />
+            </span>
+            <div>
+              <p className="font-pixel text-[9px] text-black">{t("logout")}</p>
+              <p className="font-retro text-lg leading-tight text-black/60">
+                {t("logout_hint")}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setConfirmLogout(true)}
+            className="pixel-btn shrink-0 bg-mario-red text-white"
+          >
+            {t("logout")}
+          </button>
+        </div>
+      </section>
+
       <section className="bg-[#fffdf5] p-4 text-center pixel-frame pixel-shadow">
         <p className="flex items-center justify-center gap-2 font-pixel text-[8px] text-black/50">
           <SettingIcon className="h-4 w-4" /> F-SMOKE
         </p>
       </section>
+
+      {confirmLogout && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+          onClick={() => setConfirmLogout(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-sm bg-[#fffdf5] p-6 text-center pixel-frame pixel-shadow"
+            role="dialog"
+            aria-modal="true"
+            aria-label={t("logout_confirm_title")}
+          >
+            <h3 className="font-pixel text-xs text-mario-red [text-shadow:2px_2px_0_#000]">
+              {t("logout_confirm_title")}
+            </h3>
+            <p className="mt-4 font-retro text-xl text-black/70">
+              {t("logout_confirm_text")}
+            </p>
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => setConfirmLogout(false)}
+                className="pixel-btn flex-1 bg-slate-200 text-black"
+              >
+                {t("cancel")}
+              </button>
+              <form action={signOut} className="flex-1">
+                <button
+                  type="submit"
+                  className="pixel-btn w-full bg-mario-red text-white"
+                >
+                  {t("logout")}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

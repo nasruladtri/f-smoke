@@ -113,3 +113,13 @@ export function UserIcon({ className }: PixelIconProps) {
     </svg>
   );
 }
+
+export function LogoutIcon({ className }: PixelIconProps) {
+  return (
+    <svg viewBox="0 0 32 32" className={className} fill="currentColor" aria-hidden="true">
+      <rect x="2" y="4" width="16" height="24" />
+      <rect x="6" y="14" width="12" height="4" fill="#fffdf5" />
+      <path d="M22 8l8 8-8 8v-5h-4v-6h4z" />
+    </svg>
+  );
+}

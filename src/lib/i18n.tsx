@@ -112,6 +112,12 @@ const DICTIONARY: Record<Language, Record<string, string>> = {
     login_error_invalid: "Email atau password salah.",
     login_success:
       "Akun berhasil dibuat. Cek email kamu untuk konfirmasi, lalu login.",
+    login_game_summary:
+      "F-Smoke adalah game berhenti merokok: kumpulkan XP dari waktu bebas rokok, selesaikan misi penyelamatan, dan kumpulkan item langka setiap hari.",
+    logout: "KELUAR",
+    logout_hint: "Keluar dari akun kamu.",
+    logout_confirm_title: "KELUAR DARI GAME?",
+    logout_confirm_text: "Progresmu tetap tersimpan di cloud.",
 
     set_title: "PENGATURAN",
     set_subtitle: "Atur pengalaman bermainmu.",
@@ -256,6 +262,12 @@ const DICTIONARY: Record<Language, Record<string, string>> = {
     login_error_invalid: "Invalid email or password.",
     login_success:
       "Account created. Check your email to confirm, then sign in.",
+    login_game_summary:
+      "F-Smoke is a quit-smoking game: earn XP from smoke-free time, complete rescue missions, and collect rare items every day.",
+    logout: "LOGOUT",
+    logout_hint: "Sign out of your account.",
+    logout_confirm_title: "LEAVE GAME?",
+    logout_confirm_text: "Your progress is saved in the cloud.",
 
     set_title: "SETTINGS",
     set_subtitle: "Customize your game experience.",

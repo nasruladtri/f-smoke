@@ -1,6 +1,5 @@
 "use client";
 
-import { signOut } from "@/app/actions";
 import { useLanguage } from "@/lib/i18n";
 
 interface GameTopBarProps {
@@ -42,14 +41,6 @@ export default function GameTopBar({
             />
           </div>
         </div>
-        <form action={signOut} className="shrink-0">
-          <button
-            className="pixel-btn !px-2 !py-1.5 bg-mario-red text-white !text-[8px]"
-            aria-label={t("topbar_logout")}
-          >
-            {t("topbar_logout")}
-          </button>
-        </form>
       </div>
     </div>
   );

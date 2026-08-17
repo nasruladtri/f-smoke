@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { LanguageProvider, useLanguage } from "@/lib/i18n";
 import MusicPlayer from "@/components/MusicPlayer";
+import { QUOTES, QUOTES_EN } from "@/lib/content";
 
 type Mode = "login" | "register";
 
@@ -22,6 +23,10 @@ function LoginForm() {
   const [musicOn, setMusicOn] = useState<boolean>(() => {
     if (typeof window === "undefined") return true;
     return window.localStorage.getItem("f-smoke.music") !== "0";
+  });
+  const [quote] = useState(() => {
+    const quotes = lang === "en" ? QUOTES_EN : QUOTES;
+    return quotes[Math.floor(Math.random() * quotes.length)];
   });
 
   const toggleMusic = () => {
@@ -84,7 +89,7 @@ function LoginForm() {
   };
 
   return (
-    <main className="relative mx-auto flex w-full max-w-md flex-1 items-center px-4 py-10">
+    <main className="relative mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-12">
       <div className="absolute right-4 top-6 flex gap-2">
         {(["id", "en"] as const).map((l) => (
           <button
@@ -216,6 +221,18 @@ function LoginForm() {
           </button>
         </form>
       </div>
+
+      <section className="mt-6 bg-[#fffdf5] p-4 pixel-frame pixel-shadow">
+        <p className="font-pixel text-[8px] text-mario-blue">
+          TENTANG GAME
+        </p>
+        <p className="mt-2 font-retro text-lg leading-snug text-black/70">
+          {t("login_game_summary")}
+        </p>
+        <blockquote className="mt-3 bg-mario-yellow px-3 py-2 font-retro text-lg leading-snug text-black pixel-frame">
+          “{quote}”
+        </blockquote>
+      </section>
 
       <p className="absolute bottom-4 left-0 right-0 text-center font-pixel text-[7px] text-black/50 sm:text-[8px]">
         PRESENTED BY NASRUL ADITRI
