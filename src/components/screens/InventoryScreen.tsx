@@ -79,7 +79,13 @@ function ItemDetailModal({
 
 export default function InventoryScreen({ items }: { items: OwnedItem[] }) {
   const [selected, setSelected] = useState<ItemDef | null>(null);
-  const ownedMap = new Map(items.map((i) => [i.item_id, i.quantity]));
+  const ownedMap = new Map(
+    items.filter((i) => i.quantity > 0).map((i) => [i.item_id, i.quantity])
+  );
+  const ownedList = [...ownedMap.entries()].map(([item_id, quantity]) => ({
+    item_id,
+    quantity,
+  }));
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
   const collected = ownedMap.size;
 
@@ -105,45 +111,53 @@ export default function InventoryScreen({ items }: { items: OwnedItem[] }) {
             {totalItems}
           </p>
         </div>
-        <div className="mt-3 grid grid-cols-5 gap-3">
-          {ITEMS.map((item) => {
-            const qty = ownedMap.get(item.id) ?? 0;
-            const owned = qty > 0;
-            return (
-              <button
-                key={item.id}
-                onClick={() => setSelected(item)}
-                className={`relative flex flex-col items-center gap-1 border-4 border-black p-2 transition-transform hover:scale-105 ${
-                  owned ? rarityBg(item.rarity) : "bg-slate-200"
-                }`}
-              >
-                <span className="relative">
-                  <ItemIcon
-                    id={item.id}
-                    className={`h-8 w-8 sm:h-10 sm:w-10 ${
-                      owned ? rarityColor(item.rarity) : "text-slate-400"
-                    }`}
-                  />
-                  {owned && (
-                    <span className="absolute -right-2 -top-2 border-2 border-black bg-mario-red px-1 font-pixel text-[7px] text-white">
-                      x{qty}
-                    </span>
-                  )}
-                </span>
-                {!owned && (
-                  <span className="font-pixel text-[9px] text-black/40">?</span>
-                )}
-              </button>
-            );
-          })}
-        </div>
-        <p className="mt-3 border-t-4 border-black pt-2 text-center font-retro text-lg text-black/60">
+        <p className="mt-2 text-center font-retro text-lg text-black/60">
           Koleksi:{" "}
           <span className="font-bold text-mario-green">
             {collected}/{ITEMS.length}
           </span>{" "}
           item
         </p>
+        <div className="mt-3">
+          {ownedList.length === 0 ? (
+            <div className="border-4 border-black bg-slate-100 p-8 text-center">
+              <BagIcon className="mx-auto h-10 w-10 text-black/30" />
+              <p className="mt-3 font-pixel text-[9px] text-black/60">
+                KANTONG KOSONG
+              </p>
+              <p className="mt-2 font-retro text-lg leading-tight text-black/50">
+                Dapatkan item dari check-in harian & kenaikan level!
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-5 gap-3">
+              {ownedList.map(({ item_id, quantity }) => {
+                const item = ITEMS.find((i) => i.id === item_id) ?? ITEMS[0];
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setSelected(item)}
+                    className={`relative flex flex-col items-center gap-1 border-4 border-black p-2 transition-transform hover:scale-105 ${rarityBg(
+                      item.rarity
+                    )}`}
+                  >
+                    <span className="relative">
+                      <ItemIcon
+                        id={item.id}
+                        className={`h-8 w-8 sm:h-10 sm:w-10 ${rarityColor(
+                          item.rarity
+                        )}`}
+                      />
+                      <span className="absolute -right-2 -top-2 border-2 border-black bg-mario-red px-1 font-pixel text-[7px] text-white">
+                        x{quantity}
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </section>
 
       {selected && (
