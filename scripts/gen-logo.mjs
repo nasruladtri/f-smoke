@@ -138,7 +138,6 @@ async function main() {
   const apple = await sharp(iconPng).resize(180, 180).png().toBuffer();
   writeFileSync(join(root, "src/app/apple-icon.png"), apple);
 
-  const faviconPng = await sharp(iconPng).resize(32, 32).png().toBuffer();
   const faviconBmp = await sharp(iconPng).resize(32, 32).raw().toBuffer();
   const header = Buffer.alloc(40);
   header.writeUInt32LE(40, 0);

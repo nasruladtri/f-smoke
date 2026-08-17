@@ -122,9 +122,6 @@ function LoginForm() {
             <h1 className="font-pixel text-sm text-mario-red [text-shadow:2px_2px_0_#000] sm:text-base">
               F-SMOKE
             </h1>
-            <p className="mt-1 font-retro text-lg text-black/60 sm:text-xl">
-              {mode === "login" ? t("login_welcome") : t("login_start")}
-            </p>
           </div>
         </div>
 
