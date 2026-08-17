@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat, Press_Start_2P, VT323, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import RetroBackground from "@/components/RetroBackground";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -36,7 +37,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="id"
       className={`${montserrat.variable} ${pixel.variable} ${retro.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col overflow-x-hidden">{children}</body>
+      <body className="min-h-full flex flex-col overflow-x-hidden">
+        <RetroBackground />
+        <div className="relative z-10 flex flex-1 flex-col">{children}</div>
+      </body>
     </html>
   );
 }

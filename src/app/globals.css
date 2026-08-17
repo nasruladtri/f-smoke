@@ -92,6 +92,111 @@ body {
   animation: coinBounce 1.6s ease-in-out infinite;
 }
 
+@keyframes cloudDrift {
+  from {
+    transform: translateX(-160px);
+  }
+  to {
+    transform: translateX(calc(100vw + 160px));
+  }
+}
+
+.cloud {
+  animation: cloudDrift 60s linear infinite;
+}
+
+@keyframes marioRun {
+  0% {
+    transform: translate(-220px, 0);
+    animation-timing-function: linear;
+  }
+  67% {
+    transform: translate(var(--mario-x), 0);
+    animation-timing-function: ease-out;
+  }
+  73% {
+    transform: translate(var(--mario-x), var(--mario-apex));
+    animation-timing-function: ease-in;
+  }
+  77% {
+    transform: translate(var(--mario-x), var(--mario-rim));
+    animation-timing-function: ease-in-out;
+  }
+  81% {
+    transform: translate(var(--mario-x), 0);
+    animation-timing-function: steps(1, end);
+  }
+  82% {
+    transform: translate(-220px, 0);
+  }
+  100% {
+    transform: translate(-220px, 0);
+  }
+}
+
+.mario-run {
+  animation: marioRun 18s linear infinite;
+  --mario-x: calc(96vw - 100px);
+  --mario-apex: -190px;
+  --mario-rim: -160px;
+}
+
+@media (max-width: 767px) {
+  .mario-run {
+    --mario-x: calc(96vw - 44px);
+    --mario-apex: -100px;
+    --mario-rim: -80px;
+  }
+}
+
+@keyframes legSwingA {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(35deg);
+  }
+}
+
+@keyframes legSwingB {
+  0%,
+  100% {
+    transform: rotate(35deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+}
+
+.mario-leg-a {
+  transform-origin: top center;
+  animation: legSwingA 0.45s linear infinite;
+}
+
+.mario-leg-b {
+  transform-origin: top center;
+  animation: legSwingB 0.45s linear infinite;
+}
+
+@keyframes marioBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.mario-bob {
+  animation: marioBob 0.45s linear infinite;
+}
+
+.pixelated {
+  image-rendering: pixelated;
+}
+
 @keyframes breathe {
   0%,
   100% {

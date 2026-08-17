@@ -91,15 +91,15 @@ export default function TimeTracker({
           >
             TANGGAL & WAKTU BERHENTI
           </label>
-          <div className="mt-3 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center">
             <input
               id="quit-datetime"
               type="datetime-local"
               value={inputValue}
               onChange={(e) => setDraft(e.target.value)}
-              className="w-full bg-white px-3 py-3 font-retro text-xl text-black pixel-frame focus:bg-mario-yellow/20 outline-none"
+              className="w-full min-w-0 bg-white px-3 py-3 font-retro text-xl text-black pixel-frame focus:bg-mario-yellow/20 outline-none sm:flex-1"
             />
-            <div className="flex gap-3">
+            <div className="flex shrink-0 gap-3">
               <button
                 onClick={handleSave}
                 className="pixel-btn flex-1 bg-mario-green text-white sm:flex-none"
