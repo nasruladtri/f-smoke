@@ -40,11 +40,26 @@ export default function Dashboard({ userId, email }: DashboardProps) {
   const [screen, setScreen] = useState<GameScreen>("home");
   const toastId = useRef(0);
 
+  const pushError = useCallback((message: string) => {
+    console.error("F-Smoke:", message);
+    setToasts((prev) => [...prev, { id: toastId.current++, message }]);
+  }, []);
+
+  const saveProgress = useCallback(
+    async (updates: Partial<ProgressRow>) => {
+      const { error } = await supabase
+        .from("user_progress")
+        .upsert({ user_id: userId, ...updates }, { onConflict: "user_id" });
+      if (error) pushError(error.message);
+    },
+    [supabase, userId, pushError]
+  );
+
   useEffect(() => {
     let cancelled = false;
 
     async function load() {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("user_progress")
         .select("*")
         .eq("user_id", userId)
@@ -52,14 +67,26 @@ export default function Dashboard({ userId, email }: DashboardProps) {
 
       if (cancelled) return;
 
+      if (error) {
+        pushError("Gagal memuat data player.");
+        return;
+      }
+
       if (data) {
         setProgress(data as ProgressRow);
       } else {
-        const { data: inserted } = await supabase
+        const { data: inserted, error: upsertError } = await supabase
           .from("user_progress")
-          .upsert({ user_id: userId })
+          .upsert(
+            { user_id: userId, price_per_pack: 20000, cigs_per_day: 15 },
+            { onConflict: "user_id" }
+          )
           .select()
           .maybeSingle();
+        if (upsertError) {
+          pushError("Gagal membuat data player.");
+          return;
+        }
         if (inserted) setProgress(inserted as ProgressRow);
       }
 
@@ -74,7 +101,7 @@ export default function Dashboard({ userId, email }: DashboardProps) {
     return () => {
       cancelled = true;
     };
-  }, [supabase, userId]);
+  }, [supabase, userId, pushError]);
 
   useEffect(() => {
     if (toasts.length === 0) return;
@@ -104,12 +131,12 @@ export default function Dashboard({ userId, email }: DashboardProps) {
 
       void (async () => {
         for (const item of drops) {
-          await supabase.rpc("add_item", { p_item_id: item.id });
+          const { error } = await supabase.rpc("add_item", {
+            p_item_id: item.id,
+          });
+          if (error) pushError("Hadiah level gagal disimpan.");
         }
-        await supabase
-          .from("user_progress")
-          .update({ last_rewarded_level: currentLevel })
-          .eq("user_id", userId);
+        await saveProgress({ last_rewarded_level: currentLevel });
 
         const { data: inv } = await supabase
           .from("inventory")
@@ -130,19 +157,16 @@ export default function Dashboard({ userId, email }: DashboardProps) {
         ]);
       })();
     }
-  }, [progress, totalXp, quitAt, supabase, userId]);
+  }, [progress, totalXp, quitAt, supabase, userId, saveProgress, pushError]);
 
   const handleSetQuitAt = useCallback(
     (date: Date | null) => {
       setProgress((p) =>
         p ? { ...p, quit_at: date ? date.toISOString() : null } : p
       );
-      void supabase
-        .from("user_progress")
-        .update({ quit_at: date ? date.toISOString() : null })
-        .eq("user_id", userId);
+      void saveProgress({ quit_at: date ? date.toISOString() : null });
     },
-    [supabase, userId]
+    [saveProgress]
   );
 
   const handleSettingsChange = useCallback(
@@ -150,12 +174,9 @@ export default function Dashboard({ userId, email }: DashboardProps) {
       setProgress((p) =>
         p ? { ...p, price_per_pack: price, cigs_per_day: cigs } : p
       );
-      void supabase
-        .from("user_progress")
-        .update({ price_per_pack: price, cigs_per_day: cigs })
-        .eq("user_id", userId);
+      void saveProgress({ price_per_pack: price, cigs_per_day: cigs });
     },
-    [supabase, userId]
+    [saveProgress]
   );
 
   const handleCheckIn = useCallback(() => {
@@ -175,15 +196,19 @@ export default function Dashboard({ userId, email }: DashboardProps) {
         : 1;
 
     void (async () => {
-      await supabase.rpc("add_item", { p_item_id: item.id });
-      await supabase
+      const { error } = await supabase.rpc("add_item", {
+        p_item_id: item.id,
+      });
+      if (error) pushError("Item check-in gagal disimpan.");
+      await saveProgress({ check_in_xp: newXp, last_check_in: lastCheckIn });
+
+      const { error: streakError } = await supabase
         .from("user_progress")
-        .update({
-          check_in_xp: newXp,
-          last_check_in: lastCheckIn,
-          streak: newStreak,
-        })
+        .update({ streak: newStreak })
         .eq("user_id", userId);
+      if (streakError) {
+        console.warn("F-Smoke: streak tidak tersimpan:", streakError.message);
+      }
 
       const { data: inv } = await supabase
         .from("inventory")
@@ -206,7 +231,7 @@ export default function Dashboard({ userId, email }: DashboardProps) {
         { id: toastId.current++, item, source: "CHECK-IN" },
       ]);
     })();
-  }, [progress, supabase, userId]);
+  }, [progress, saveProgress, supabase, userId, pushError]);
 
   const checkedInToday =
     progress?.last_check_in != null &&
