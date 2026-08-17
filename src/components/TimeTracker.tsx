@@ -99,17 +99,17 @@ export default function TimeTracker({
               onChange={(e) => setDraft(e.target.value)}
               className="w-full min-w-0 bg-white px-3 py-3 font-retro text-xl text-black pixel-frame focus:bg-mario-yellow/20 outline-none sm:flex-1"
             />
-            <div className="flex shrink-0 gap-3">
+            <div className="grid shrink-0 grid-cols-2 gap-3 sm:flex">
               <button
                 onClick={handleSave}
-                className="pixel-btn flex-1 bg-mario-green text-white sm:flex-none"
+                className="pixel-btn bg-mario-green text-white sm:flex-1"
               >
                 {parts ? t("tt_update") : t("tt_start")}
               </button>
               {parts && (
                 <button
                   onClick={() => setConfirmingReset(true)}
-                  className="pixel-btn bg-mario-red text-white"
+                  className="pixel-btn bg-mario-red text-white sm:flex-1"
                 >
                   Reset
                 </button>
