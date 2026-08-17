@@ -27,36 +27,34 @@ export default function SavingsCalculator({
   const moneySaved = packsAvoided * pricePerPack;
 
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-400">
-        Penghematan
+    <section className="bg-[#fffdf5] p-6 text-black pixel-frame pixel-shadow">
+      <h2 className="font-pixel text-[10px] text-mario-red [text-shadow:2px_2px_0_#000] sm:text-xs">
+        PENGHEMATAN
       </h2>
 
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        <div className="rounded-2xl bg-emerald-50 p-4">
-          <div className="text-xs font-medium text-emerald-600">
-            Uang Dihemat
-          </div>
-          <div className="mt-1 text-xl font-bold text-emerald-700 tabular-nums sm:text-2xl">
+      <div className="mt-5 grid grid-cols-2 gap-3">
+        <div className="bg-mario-green p-4 pixel-frame pixel-shadow-sm">
+          <div className="font-pixel text-[8px] text-white/80">UANG DIHEMAT</div>
+          <div className="mt-2 font-pixel text-sm text-white pixel-outline tabular-nums sm:text-lg">
             {started ? formatIDR(moneySaved) : formatIDR(0)}
           </div>
         </div>
-        <div className="rounded-2xl bg-teal-50 p-4">
-          <div className="text-xs font-medium text-teal-600">
-            Batang Tidak Diisap
+        <div className="bg-mario-blue p-4 pixel-frame pixel-shadow-sm">
+          <div className="font-pixel text-[8px] text-white/80">
+            BATANG TIDAK DIISAP
           </div>
-          <div className="mt-1 text-xl font-bold text-teal-700 tabular-nums sm:text-2xl">
+          <div className="mt-2 font-pixel text-sm text-white pixel-outline tabular-nums sm:text-lg">
             {started ? formatNumber(sticksAvoided) : 0}
           </div>
         </div>
       </div>
 
-      <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+      <div className="mt-5 bg-mario-sky p-4 pixel-frame">
         <label
           htmlFor="price-input"
-          className="block text-xs font-semibold uppercase tracking-wider text-slate-500"
+          className="block font-pixel text-[9px] text-black"
         >
-          Harga per Bungkus (Rp)
+          HARGA PER BUNGKUS (RP)
         </label>
         <input
           id="price-input"
@@ -67,14 +65,14 @@ export default function SavingsCalculator({
           onChange={(e) =>
             onSettingsChange(toNonNegative(e.target.value), cigsPerDay)
           }
-          className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none ring-teal-300 transition focus:border-teal-500 focus:ring-2"
+          className="mt-2 w-full bg-white px-3 py-3 font-retro text-xl text-black pixel-frame focus:bg-mario-yellow/20 outline-none"
         />
 
         <label
           htmlFor="cigs-input"
-          className="mt-3 block text-xs font-semibold uppercase tracking-wider text-slate-500"
+          className="mt-4 block font-pixel text-[9px] text-black"
         >
-          Batang yang Diisap per Hari
+          BATANG YANG DIISAP PER HARI
         </label>
         <input
           id="cigs-input"
@@ -85,12 +83,12 @@ export default function SavingsCalculator({
           onChange={(e) =>
             onSettingsChange(pricePerPack, toNonNegative(e.target.value))
           }
-          className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none ring-teal-300 transition focus:border-teal-500 focus:ring-2"
+          className="mt-2 w-full bg-white px-3 py-3 font-retro text-xl text-black pixel-frame focus:bg-mario-yellow/20 outline-none"
         />
 
-        <p className="mt-3 text-xs text-slate-400">
-          Pengaturan tersimpan otomatis. Estimasi dihitung asumsi {CIGS_PER_PACK}{" "}
-          batang per bungkus, mengikuti waktu yang berlalu di tracker.
+        <p className="mt-4 font-retro text-lg text-black/60">
+          Pengaturan tersimpan otomatis. Estimasi asumsi {CIGS_PER_PACK} batang
+          per bungkus, mengikuti waktu di tracker.
         </p>
       </div>
     </section>

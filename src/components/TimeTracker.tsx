@@ -22,6 +22,7 @@ export default function TimeTracker({
   onSetQuitAt,
 }: TimeTrackerProps) {
   const [draft, setDraft] = useState<string | null>(null);
+  const [confirmingReset, setConfirmingReset] = useState(false);
   const inputValue = draft ?? (quitAt ? toDateTimeInputValue(quitAt) : "");
 
   const handleSave = () => {
@@ -33,6 +34,7 @@ export default function TimeTracker({
   };
 
   const handleReset = () => {
+    setConfirmingReset(false);
     setDraft(null);
     onSetQuitAt(null);
   };
@@ -40,80 +42,118 @@ export default function TimeTracker({
   const parts = quitAt ? diffParts(now, quitAt) : null;
 
   return (
-    <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-teal-600 via-teal-500 to-cyan-500 p-6 text-white shadow-lg shadow-teal-600/20">
-      <h2 className="text-sm font-semibold uppercase tracking-widest text-teal-100">
-        Waktu Bebas Rokok
-      </h2>
+    <>
+      <section className="bg-[#fffdf5] p-6 text-black pixel-frame pixel-shadow">
+        <h2 className="font-pixel text-[10px] text-mario-red [text-shadow:2px_2px_0_#000] sm:text-xs">
+          WAKTU BEBAS ROKOK
+        </h2>
 
-      {quitAt && parts ? (
-        <>
-          <div className="mt-5 grid grid-cols-4 gap-3 text-center">
-            {[
-              { value: parts.days, label: "Hari" },
-              { value: parts.hours, label: "Jam" },
-              { value: pad(parts.minutes), label: "Menit" },
-              { value: pad(parts.seconds), label: "Detik" },
-            ].map(({ value, label }) => (
-              <div
-                key={label}
-                className="rounded-2xl bg-white/10 px-2 py-4 backdrop-blur-sm"
-              >
-                <div className="font-mono text-2xl font-bold tabular-nums sm:text-3xl">
-                  {value}
+        {quitAt && parts ? (
+          <>
+            <div className="mt-6 grid grid-cols-4 gap-3 text-center">
+              {[
+                { value: parts.days, label: "HARI" },
+                { value: parts.hours, label: "JAM" },
+                { value: pad(parts.minutes), label: "MENIT" },
+                { value: pad(parts.seconds), label: "DETIK" },
+              ].map(({ value, label }) => (
+                <div
+                  key={label}
+                  className="bg-mario-blue px-1 py-4 pixel-frame pixel-shadow-sm"
+                >
+                  <div className="font-pixel text-lg text-white pixel-outline tabular-nums sm:text-2xl">
+                    {value}
+                  </div>
+                  <div className="mt-2 font-pixel text-[7px] text-mario-sky sm:text-[8px]">
+                    {label}
+                  </div>
                 </div>
-                <div className="mt-1 text-[11px] font-medium uppercase tracking-wider text-teal-100">
-                  {label}
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="mt-4 text-xs text-teal-100">
-            Berhenti sejak{" "}
-            <span className="font-semibold text-white">
-              {formatDateTime(quitAt)}
-            </span>
+              ))}
+            </div>
+            <p className="mt-5 font-retro text-lg text-black/70">
+              Berhenti sejak{" "}
+              <span className="font-bold text-mario-red">
+                {formatDateTime(quitAt)}
+              </span>
+            </p>
+          </>
+        ) : (
+          <p className="mt-4 font-retro text-xl text-black/70">
+            Kamu belum mencatat waktu berhenti. Atur tanggal & jam di bawah,
+            lalu mulai hitung!
           </p>
-        </>
-      ) : (
-        <p className="mt-4 rounded-2xl bg-white/10 px-4 py-3 text-sm text-teal-50">
-          Kamu belum mencatat waktu berhenti. Atur tanggal & jam di bawah, lalu
-          mulai hitung!
-        </p>
-      )}
+        )}
 
-      <div className="mt-5 rounded-2xl bg-white/10 p-4 backdrop-blur-sm">
-        <label
-          htmlFor="quit-datetime"
-          className="block text-xs font-semibold uppercase tracking-wider text-teal-100"
-        >
-          Tanggal & Waktu Berhenti
-        </label>
-        <div className="mt-2 flex flex-col gap-2 sm:flex-row">
-          <input
-            id="quit-datetime"
-            type="datetime-local"
-            value={inputValue}
-            onChange={(e) => setDraft(e.target.value)}
-            className="w-full rounded-xl border-0 bg-white/95 px-3 py-2.5 text-sm text-slate-800 outline-none ring-teal-300 transition focus:ring-2"
-          />
-          <div className="flex gap-2">
-            <button
-              onClick={handleSave}
-              className="flex-1 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-teal-700 shadow-sm transition hover:bg-teal-50 active:scale-95 sm:flex-none"
-            >
-              {parts ? "Perbarui" : "Mulai"}
-            </button>
-            {parts && (
+        <div className="mt-5 bg-mario-sky p-4 pixel-frame">
+          <label
+            htmlFor="quit-datetime"
+            className="block font-pixel text-[9px] text-black"
+          >
+            TANGGAL & WAKTU BERHENTI
+          </label>
+          <div className="mt-3 flex flex-col gap-3 sm:flex-row">
+            <input
+              id="quit-datetime"
+              type="datetime-local"
+              value={inputValue}
+              onChange={(e) => setDraft(e.target.value)}
+              className="w-full bg-white px-3 py-3 font-retro text-xl text-black pixel-frame focus:bg-mario-yellow/20 outline-none"
+            />
+            <div className="flex gap-3">
               <button
-                onClick={handleReset}
-                className="rounded-xl bg-white/20 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/30 active:scale-95"
+                onClick={handleSave}
+                className="pixel-btn flex-1 bg-mario-green text-white sm:flex-none"
               >
-                Reset
+                {parts ? "Perbarui" : "Mulai"}
               </button>
-            )}
+              {parts && (
+                <button
+                  onClick={() => setConfirmingReset(true)}
+                  className="pixel-btn bg-mario-red text-white"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {confirmingReset && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+          onClick={() => setConfirmingReset(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-sm bg-[#fffdf5] p-6 text-center pixel-frame pixel-shadow"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Konfirmasi reset"
+          >
+            <h3 className="font-pixel text-xs text-mario-red [text-shadow:2px_2px_0_#000]">
+              RESET WAKTU BERHENTI?
+            </h3>
+            <p className="mt-4 font-retro text-xl text-black/70">
+              Progres waktu bebas rokok akan dihitung ulang dari nol.
+            </p>
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => setConfirmingReset(false)}
+                className="pixel-btn flex-1 bg-slate-200 text-black"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleReset}
+                className="pixel-btn flex-1 bg-mario-red text-white"
+              >
+                Ya, Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
