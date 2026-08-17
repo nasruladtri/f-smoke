@@ -1,14 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { QUOTES } from "@/lib/content";
+import { QUOTES, QUOTES_EN } from "@/lib/content";
+import { useLanguage } from "@/lib/i18n";
 
 export default function SOSButton() {
+  const { lang, t } = useLanguage();
+  const quotes = lang === "en" ? QUOTES_EN : QUOTES;
   const [open, setOpen] = useState(false);
-  const [quote, setQuote] = useState(QUOTES[0]);
+  const [quote, setQuote] = useState(quotes[0]);
 
   const openSos = () => {
-    setQuote(QUOTES[Math.floor(Math.random() * QUOTES.length)]);
+    setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
     setOpen(true);
   };
 
@@ -28,7 +31,7 @@ export default function SOSButton() {
       <button
         onClick={openSos}
         className="fixed bottom-20 right-5 z-40 flex h-16 w-16 items-center justify-center bg-mario-red font-pixel text-[10px] text-white pixel-frame pixel-shadow-sm transition-transform active:translate-y-0.5"
-        aria-label="Tombol SOS darurat"
+        aria-label={t("sos_title")}
       >
         SOS
       </button>
@@ -43,13 +46,13 @@ export default function SOSButton() {
             className="w-full max-w-sm bg-[#fffdf5] p-6 text-center pixel-frame pixel-shadow"
             role="dialog"
             aria-modal="true"
-            aria-label="Panduan darurat berhenti merokok"
+            aria-label={t("sos_title")}
           >
             <h2 className="font-pixel text-xs text-mario-red [text-shadow:2px_2px_0_#000]">
-              TENANG, KAMU BISA!
+              {t("sos_title")}
             </h2>
             <p className="mt-2 font-retro text-lg text-black/70">
-              Ikuti napas berikut, craving hanya lewat sebentar.
+              {t("sos_text")}
             </p>
 
             <div className="mt-6 flex items-center justify-center">
@@ -58,10 +61,10 @@ export default function SOSButton() {
                 <div className="absolute inset-6 bg-mario-sky animate-breathe" />
                 <div className="relative z-10 flex h-24 w-24 items-center justify-center bg-[#fffdf5] pixel-frame">
                   <span className="px-2 font-pixel text-[8px] text-mario-blue animate-breathe-text">
-                    TARIK NAPAS...
+                    {t("sos_inhale")}
                   </span>
                   <span className="absolute px-2 font-pixel text-[8px] text-mario-blue animate-breathe-text-alt">
-                    HEMBUSKAN...
+                    {t("sos_exhale")}
                   </span>
                 </div>
               </div>
@@ -75,7 +78,7 @@ export default function SOSButton() {
               onClick={closeSos}
               className="pixel-btn mt-6 w-full bg-black text-white"
             >
-              Aku kuat, tutup
+              {t("sos_close")}
             </button>
           </div>
         </div>

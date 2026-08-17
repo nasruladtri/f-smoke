@@ -3,12 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { LanguageProvider, useLanguage } from "@/lib/i18n";
 
 type Mode = "login" | "register";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const supabase = createClient();
+  const { lang, setLang, t } = useLanguage();
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,7 +25,7 @@ export default function LoginPage() {
     setInfo(null);
 
     if (mode === "register" && password !== confirm) {
-      setError("Konfirmasi password tidak cocok.");
+      setError(t("login_error_confirm"));
       return;
     }
 
@@ -37,7 +39,7 @@ export default function LoginPage() {
         if (signInError) {
           setError(
             signInError.message.includes("Invalid login credentials")
-              ? "Email atau password salah."
+              ? t("login_error_invalid")
               : signInError.message
           );
           return;
@@ -56,9 +58,7 @@ export default function LoginPage() {
           setError(signUpError.message);
           return;
         }
-        setInfo(
-          "Akun berhasil dibuat. Cek email kamu untuk konfirmasi, lalu login."
-        );
+        setInfo(t("login_success"));
         setMode("login");
       }
     } finally {
@@ -67,13 +67,27 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-1 items-center px-4 py-10">
+    <main className="relative mx-auto flex w-full max-w-md flex-1 items-center px-4 py-10">
+      <div className="absolute right-4 top-6 flex gap-2">
+        {(["id", "en"] as const).map((l) => (
+          <button
+            key={l}
+            onClick={() => setLang(l)}
+            className={`border-4 border-black px-2 py-1 font-pixel text-[8px] ${
+              lang === l ? "bg-mario-yellow text-black" : "bg-white/80 text-black/60"
+            }`}
+          >
+            {l.toUpperCase()}
+          </button>
+        ))}
+      </div>
+
       <div className="w-full bg-[#fffdf5] p-6 text-black pixel-frame pixel-shadow sm:p-8">
         <h1 className="text-center font-pixel text-sm text-mario-red [text-shadow:2px_2px_0_#000] sm:text-base">
           F-SMOKE
         </h1>
         <p className="mt-2 text-center font-retro text-xl text-black/60">
-          {mode === "login" ? "Selamat datang kembali!" : "Mulai petualanganmu!"}
+          {mode === "login" ? t("login_welcome") : t("login_start")}
         </p>
 
         <div className="mt-6 grid grid-cols-2 gap-3">
@@ -91,7 +105,7 @@ export default function LoginPage() {
                   : "bg-slate-200 text-black"
               }`}
             >
-              {m === "login" ? "Masuk" : "Daftar"}
+              {m === "login" ? t("login_login") : t("login_register")}
             </button>
           ))}
         </div>
@@ -102,7 +116,7 @@ export default function LoginPage() {
               htmlFor="login-email"
               className="block font-pixel text-[9px] text-black"
             >
-              EMAIL
+              {t("login_email")}
             </label>
             <input
               id="login-email"
@@ -119,7 +133,7 @@ export default function LoginPage() {
               htmlFor="login-password"
               className="block font-pixel text-[9px] text-black"
             >
-              PASSWORD
+              {t("login_password")}
             </label>
             <input
               id="login-password"
@@ -139,7 +153,7 @@ export default function LoginPage() {
                 htmlFor="login-confirm"
                 className="block font-pixel text-[9px] text-black"
               >
-                KONFIRMASI PASSWORD
+                {t("login_confirm")}
               </label>
               <input
                 id="login-confirm"
@@ -169,10 +183,22 @@ export default function LoginPage() {
             disabled={loading}
             className="pixel-btn w-full bg-mario-green text-white disabled:opacity-50"
           >
-            {loading ? "Tunggu..." : mode === "login" ? "Masuk" : "Daftar"}
+            {loading
+              ? t("login_wait")
+              : mode === "login"
+                ? t("login_login")
+                : t("login_register")}
           </button>
         </form>
       </div>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <LanguageProvider>
+      <LoginForm />
+    </LanguageProvider>
   );
 }

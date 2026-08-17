@@ -7,6 +7,7 @@ import {
   fromDateTimeInputValue,
   toDateTimeInputValue,
 } from "@/lib/format";
+import { useLanguage } from "@/lib/i18n";
 
 interface TimeTrackerProps {
   quitAt: Date | null;
@@ -21,6 +22,7 @@ export default function TimeTracker({
   now,
   onSetQuitAt,
 }: TimeTrackerProps) {
+  const { t } = useLanguage();
   const [draft, setDraft] = useState<string | null>(null);
   const [confirmingReset, setConfirmingReset] = useState(false);
   const inputValue = draft ?? (quitAt ? toDateTimeInputValue(quitAt) : "");
@@ -45,17 +47,17 @@ export default function TimeTracker({
     <>
       <section className="bg-[#fffdf5] p-6 text-black pixel-frame pixel-shadow">
         <h2 className="font-pixel text-[10px] text-mario-red [text-shadow:2px_2px_0_#000] sm:text-xs">
-          WAKTU BEBAS ROKOK
+          {t("tt_title")}
         </h2>
 
         {quitAt && parts ? (
           <>
             <div className="mt-6 grid grid-cols-4 gap-3 text-center">
               {[
-                { value: parts.days, label: "HARI" },
-                { value: parts.hours, label: "JAM" },
-                { value: pad(parts.minutes), label: "MENIT" },
-                { value: pad(parts.seconds), label: "DETIK" },
+                { value: parts.days, label: t("tt_day") },
+                { value: parts.hours, label: t("tt_hour") },
+                { value: pad(parts.minutes), label: t("tt_minute") },
+                { value: pad(parts.seconds), label: t("tt_second") },
               ].map(({ value, label }) => (
                 <div
                   key={label}
@@ -71,16 +73,14 @@ export default function TimeTracker({
               ))}
             </div>
             <p className="mt-5 font-retro text-lg text-black/70">
-              Berhenti sejak{" "}
-              <span className="font-bold text-mario-red">
-                {formatDateTime(quitAt)}
-              </span>
+              {t("tt_since", {
+                date: formatDateTime(quitAt),
+              })}
             </p>
           </>
         ) : (
           <p className="mt-4 font-retro text-xl text-black/70">
-            Kamu belum mencatat waktu berhenti. Atur tanggal & jam di bawah,
-            lalu mulai hitung!
+            {t("tt_empty")}
           </p>
         )}
 
@@ -89,7 +89,7 @@ export default function TimeTracker({
             htmlFor="quit-datetime"
             className="block font-pixel text-[9px] text-black"
           >
-            TANGGAL & WAKTU BERHENTI
+            {t("tt_label")}
           </label>
           <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center">
             <input
@@ -104,7 +104,7 @@ export default function TimeTracker({
                 onClick={handleSave}
                 className="pixel-btn flex-1 bg-mario-green text-white sm:flex-none"
               >
-                {parts ? "Perbarui" : "Mulai"}
+                {parts ? t("tt_update") : t("tt_start")}
               </button>
               {parts && (
                 <button
@@ -132,23 +132,23 @@ export default function TimeTracker({
             aria-label="Konfirmasi reset"
           >
             <h3 className="font-pixel text-xs text-mario-red [text-shadow:2px_2px_0_#000]">
-              RESET WAKTU BERHENTI?
+              {t("tt_reset_title")}
             </h3>
             <p className="mt-4 font-retro text-xl text-black/70">
-              Progres waktu bebas rokok akan dihitung ulang dari nol.
+              {t("tt_reset_text")}
             </p>
             <div className="mt-6 flex gap-3">
               <button
                 onClick={() => setConfirmingReset(false)}
                 className="pixel-btn flex-1 bg-slate-200 text-black"
               >
-                Batal
+                {t("cancel")}
               </button>
               <button
                 onClick={handleReset}
                 className="pixel-btn flex-1 bg-mario-red text-white"
               >
-                Ya, Reset
+                {t("confirm_reset")}
               </button>
             </div>
           </div>

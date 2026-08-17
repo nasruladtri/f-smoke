@@ -2,6 +2,7 @@
 
 import { elapsedMinutes, formatIDR, formatNumber } from "@/lib/format";
 import { CIGS_PER_PACK } from "@/lib/content";
+import { useLanguage } from "@/lib/i18n";
 
 interface SavingsCalculatorProps {
   quitAt: Date | null;
@@ -20,6 +21,7 @@ export default function SavingsCalculator({
   cigsPerDay,
   onSettingsChange,
 }: SavingsCalculatorProps) {
+  const { t } = useLanguage();
   const started = quitAt !== null;
   const daysElapsed = quitAt ? elapsedMinutes(now, quitAt) / (24 * 60) : 0;
   const sticksAvoided = daysElapsed * cigsPerDay;
@@ -29,19 +31,19 @@ export default function SavingsCalculator({
   return (
     <section className="bg-[#fffdf5] p-6 text-black pixel-frame pixel-shadow">
       <h2 className="font-pixel text-[10px] text-mario-red [text-shadow:2px_2px_0_#000] sm:text-xs">
-        PENGHEMATAN
+        {t("sav_title")}
       </h2>
 
       <div className="mt-5 grid grid-cols-2 gap-3">
         <div className="bg-mario-green p-4 pixel-frame pixel-shadow-sm">
-          <div className="font-pixel text-[8px] text-white/80">UANG DIHEMAT</div>
+          <div className="font-pixel text-[8px] text-white/80">{t("sav_money")}</div>
           <div className="mt-2 font-pixel text-sm text-white pixel-outline tabular-nums sm:text-lg">
             {started ? formatIDR(moneySaved) : formatIDR(0)}
           </div>
         </div>
         <div className="bg-mario-blue p-4 pixel-frame pixel-shadow-sm">
           <div className="font-pixel text-[8px] text-white/80">
-            BATANG TIDAK DIISAP
+            {t("sav_sticks")}
           </div>
           <div className="mt-2 font-pixel text-sm text-white pixel-outline tabular-nums sm:text-lg">
             {started ? formatNumber(sticksAvoided) : 0}
@@ -54,7 +56,7 @@ export default function SavingsCalculator({
           htmlFor="price-input"
           className="block font-pixel text-[9px] text-black"
         >
-          HARGA PER BUNGKUS (RP)
+          {t("sav_price")}
         </label>
         <input
           id="price-input"
@@ -72,7 +74,7 @@ export default function SavingsCalculator({
           htmlFor="cigs-input"
           className="mt-4 block font-pixel text-[9px] text-black"
         >
-          BATANG YANG DIISAP PER HARI
+          {t("sav_cigs")}
         </label>
         <input
           id="cigs-input"
@@ -87,8 +89,7 @@ export default function SavingsCalculator({
         />
 
         <p className="mt-4 font-retro text-lg text-black/60">
-          Pengaturan tersimpan otomatis. Estimasi asumsi {CIGS_PER_PACK} batang
-          per bungkus, mengikuti waktu di tracker.
+          {t("sav_note", { n: CIGS_PER_PACK })}
         </p>
       </div>
     </section>

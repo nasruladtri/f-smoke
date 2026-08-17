@@ -3,6 +3,7 @@
 import TimeTracker from "@/components/TimeTracker";
 import SavingsCalculator from "@/components/SavingsCalculator";
 import { CheckInIcon } from "@/components/PixelIcons";
+import { useLanguage } from "@/lib/i18n";
 
 interface HomeScreenProps {
   level: number;
@@ -29,6 +30,7 @@ export default function HomeScreen({
   cigsPerDay,
   onSettingsChange,
 }: HomeScreenProps) {
+  const { t } = useLanguage();
   const minutes = quitAt ? Math.max(0, (now.getTime() - quitAt.getTime()) / 60000) : 0;
   const daysFree = Math.floor(minutes / (24 * 60));
 
@@ -38,19 +40,17 @@ export default function HomeScreen({
         <h1 className="font-pixel text-xl text-white pixel-outline sm:text-2xl">
           F-SMOKE
         </h1>
-        <p className="font-retro text-2xl text-black/60">
-          Berhenti merokok adalah petualanganmu.
-        </p>
+        <p className="font-retro text-2xl text-black/60">{t("home_subtitle")}</p>
       </header>
 
       <section className="bg-[#fffdf5] p-4 pixel-frame pixel-shadow">
         <p className="mb-3 text-center font-pixel text-[9px] text-black/60">
-          STATUS PLAYER
+          {t("home_status")}
         </p>
         <div className="grid grid-cols-2 gap-3">
           <div className="border-4 border-black bg-white p-3 text-center">
             <p className="font-pixel text-2xl text-mario-red">{level}</p>
-            <p className="mt-1 font-pixel text-[6px] text-black/60">LEVEL</p>
+            <p className="mt-1 font-pixel text-[6px] text-black/60">{t("home_level")}</p>
           </div>
           <div className="border-4 border-black bg-white p-3 text-center">
             <p className="flex items-center justify-center gap-2 font-retro text-2xl leading-none text-mario-green">
@@ -58,7 +58,7 @@ export default function HomeScreen({
               {streak}
             </p>
             <p className="mt-1 font-pixel text-[6px] text-black/60">
-              STREAK (HARI)
+              {t("home_streak")}
             </p>
           </div>
         </div>
@@ -81,9 +81,7 @@ export default function HomeScreen({
         </div>
         {daysFree > 0 && (
           <p className="mt-3 border-t-4 border-black pt-2 text-center font-retro text-xl text-black/70">
-            Bebas rokok selama{" "}
-            <span className="font-bold text-mario-green">{daysFree} hari</span>{" "}
-            berturut-turut!
+            {t("home_free_days", { days: daysFree })}
           </p>
         )}
       </section>

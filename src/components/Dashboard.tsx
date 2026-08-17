@@ -14,6 +14,9 @@ import HomeScreen from "@/components/screens/HomeScreen";
 import TasksScreen from "@/components/screens/TasksScreen";
 import CheckInScreen from "@/components/screens/CheckInScreen";
 import InventoryScreen, { type OwnedItem } from "@/components/screens/InventoryScreen";
+import SettingsScreen from "@/components/screens/SettingsScreen";
+import MusicPlayer from "@/components/MusicPlayer";
+import { LanguageProvider, useLanguage } from "@/lib/i18n";
 
 interface ProgressRow {
   quit_at: string | null;
@@ -38,12 +41,32 @@ export default function Dashboard({ userId, email }: DashboardProps) {
   const [inventory, setInventory] = useState<OwnedItem[]>([]);
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [screen, setScreen] = useState<GameScreen>("home");
+  const [displayName, setDisplayName] = useState(email.split("@")[0] || email);
+  const [musicOn, setMusicOn] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    return window.localStorage.getItem("f-smoke.music") !== "0";
+  });
   const toastId = useRef(0);
 
-  const pushError = useCallback((message: string) => {
+const pushError = useCallback((message: string) => {
     console.error("F-Smoke:", message);
     setToasts((prev) => [...prev, { id: toastId.current++, message }]);
   }, []);
+
+  const saveDisplayName = useCallback(
+    async (name: string): Promise<boolean> => {
+      const { error } = await supabase
+        .from("profiles")
+        .upsert({ id: userId, display_name: name }, { onConflict: "id" });
+      if (error) {
+        pushError(error.message);
+        return false;
+      }
+      setDisplayName(name);
+      return true;
+    },
+    [supabase, userId, pushError]
+  );
 
   const saveProgress = useCallback(
     async (updates: Partial<ProgressRow>) => {
@@ -54,6 +77,18 @@ export default function Dashboard({ userId, email }: DashboardProps) {
     },
     [supabase, userId, pushError]
   );
+
+  const toggleMusic = useCallback(() => {
+    setMusicOn((on) => {
+      const next = !on;
+      try {
+        window.localStorage.setItem("f-smoke.music", next ? "1" : "0");
+      } catch {
+        // ignore storage errors
+      }
+      return next;
+    });
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -95,13 +130,29 @@ export default function Dashboard({ userId, email }: DashboardProps) {
         .select("item_id, quantity")
         .eq("user_id", userId);
       if (!cancelled && inv) setInventory(inv as OwnedItem[]);
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("display_name")
+        .eq("id", userId)
+        .maybeSingle();
+      if (cancelled) return;
+      if (profile?.display_name) {
+        setDisplayName(profile.display_name);
+      } else {
+        const name = email.split("@")[0] || email;
+        await supabase
+          .from("profiles")
+          .upsert({ id: userId, display_name: name }, { onConflict: "id" });
+        setDisplayName(name);
+      }
     }
 
     load();
     return () => {
       cancelled = true;
     };
-  }, [supabase, userId, pushError]);
+  }, [supabase, userId, email, pushError]);
 
   useEffect(() => {
     if (toasts.length === 0) return;
@@ -238,9 +289,9 @@ export default function Dashboard({ userId, email }: DashboardProps) {
     new Date(progress.last_check_in).toDateString() === now.toDateString();
 
   return (
-    <>
+    <LanguageProvider>
       <GameTopBar
-        email={email}
+        displayName={displayName}
         level={level}
         xp={totalXp}
         xpProgress={xpMeta.progress}
@@ -248,11 +299,7 @@ export default function Dashboard({ userId, email }: DashboardProps) {
 
       <main className="mx-auto w-full max-w-lg flex-1 px-4 pb-28 pt-20 sm:py-24">
         {!progress ? (
-          <section className="mt-10 bg-[#fffdf5] p-6 text-center text-black pixel-frame pixel-shadow">
-            <p className="animate-pulse font-retro text-2xl">
-              MEMUAT DUNIA GAME...
-            </p>
-          </section>
+          <LoadingScreen />
         ) : (
           <div key={screen} className="screen-fade">
             {screen === "home" && (
@@ -284,6 +331,14 @@ export default function Dashboard({ userId, email }: DashboardProps) {
               />
             )}
             {screen === "inventory" && <InventoryScreen items={inventory} />}
+            {screen === "setting" && (
+              <SettingsScreen
+                musicOn={musicOn}
+                onToggleMusic={toggleMusic}
+                displayName={displayName}
+                onSaveDisplayName={saveDisplayName}
+              />
+            )}
           </div>
         )}
 
@@ -294,7 +349,18 @@ export default function Dashboard({ userId, email }: DashboardProps) {
         <ItemToast key={toast.id} toast={toast} />
       ))}
 
+      <MusicPlayer enabled={musicOn} />
+
       <GameMenuBar active={screen} onChange={setScreen} />
-    </>
+    </LanguageProvider>
+  );
+}
+
+function LoadingScreen() {
+  const { t } = useLanguage();
+  return (
+    <section className="mt-10 bg-[#fffdf5] p-6 text-center text-black pixel-frame pixel-shadow">
+      <p className="animate-pulse font-retro text-2xl">{t("loading")}</p>
+    </section>
   );
 }

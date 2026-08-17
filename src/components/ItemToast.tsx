@@ -2,6 +2,7 @@
 
 import type { ItemDef } from "@/lib/items";
 import { ItemIcon } from "@/components/PixelItems";
+import { useLanguage } from "@/lib/i18n";
 
 export interface Toast {
   id: number;
@@ -11,6 +12,8 @@ export interface Toast {
 }
 
 export default function ItemToast({ toast }: { toast: Toast }) {
+  const { t } = useLanguage();
+
   if (toast.message) {
     return (
       <div className="fixed bottom-20 left-4 z-50 flex max-w-[280px] items-center gap-3 bg-[#fffdf5] p-3 text-black pixel-frame pixel-shadow">
@@ -18,7 +21,7 @@ export default function ItemToast({ toast }: { toast: Toast }) {
           !
         </span>
         <div className="min-w-0">
-          <p className="font-pixel text-[8px] text-mario-red">GAGAL SIMPAN</p>
+          <p className="font-pixel text-[8px] text-mario-red">{t("toast_error")}</p>
           <p className="truncate font-retro text-lg leading-tight text-black">
             {toast.message}
           </p>
@@ -31,7 +34,7 @@ export default function ItemToast({ toast }: { toast: Toast }) {
     <div className="fixed bottom-20 left-4 z-50 flex max-w-[280px] items-center gap-3 bg-[#fffdf5] p-3 text-black pixel-frame pixel-shadow">
       <ItemIcon id={toast.item!.id} className="h-9 w-9 shrink-0" />
       <div className="min-w-0">
-        <p className="font-pixel text-[8px] text-mario-green">ITEM DIDAPAT!</p>
+        <p className="font-pixel text-[8px] text-mario-green">{t("toast_item")}</p>
         <p className="truncate font-retro text-lg leading-tight text-black">
           {toast.item!.name} ({toast.source})
         </p>
