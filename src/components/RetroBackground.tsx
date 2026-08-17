@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 export const PixelCloud = () => (
   <svg viewBox="0 0 96 40" width="100%" preserveAspectRatio="none" aria-hidden="true">
     <rect x="16" y="8" width="16" height="16" fill="#fff" />
@@ -71,15 +69,6 @@ export const PixelMushroom = () => (
     <circle cx="21" cy="12" r="3" fill="#fff" stroke="#000" strokeWidth="2" />
     <rect x="12" y="20" width="8" height="14" fill="#fff3d6" stroke="#000" strokeWidth="2.5" />
     <rect x="14" y="26" width="4" height="3" fill="#3d3d3d" />
-  </svg>
-);
-
-export const PixelPipe = () => (
-  <svg viewBox="0 0 48 80" width="100%" preserveAspectRatio="none" aria-hidden="true">
-    <rect x="4" y="32" width="40" height="8" fill="#3fae3f" stroke="#000" strokeWidth="2" />
-    <rect x="6" y="40" width="36" height="40" fill="#3fae3f" stroke="#000" strokeWidth="2" />
-    <rect x="8" y="34" width="14" height="4" fill="#7edb7e" />
-    <rect x="9" y="43" width="10" height="10" fill="#2b8a2b" />
   </svg>
 );
 
@@ -165,27 +154,6 @@ export default function RetroBackground() {
         <div className="absolute bottom-0 left-[60%] w-36">
           <PixelHill />
         </div>
-      </div>
-
-      <div
-        aria-hidden="true"
-        className="fixed bottom-8 left-0 z-0 pointer-events-none mario-run"
-      >
-        <Image
-          src="/mario.png"
-          alt=""
-          width={80}
-          height={80}
-          unoptimized
-          className="w-10 h-10 md:w-20 md:h-20 object-contain shrink-0 pixelated mario-bob"
-        />
-      </div>
-
-      <div
-        aria-hidden="true"
-        className="fixed right-[4%] bottom-8 w-12 md:w-24 z-0 pointer-events-none"
-      >
-        <PixelPipe />
       </div>
 
       <div
