@@ -123,3 +123,67 @@ export function LogoutIcon({ className }: PixelIconProps) {
     </svg>
   );
 }
+
+export function CoinIcon({ className }: PixelIconProps) {
+  return (
+    <svg viewBox="0 0 32 32" className={className} aria-hidden="true">
+      <circle cx="16" cy="16" r="13" fill="#ffd700" stroke="#000" strokeWidth="3" />
+      <rect x="8" y="7" width="9" height="4" fill="#fff4c2" />
+    </svg>
+  );
+}
+
+export function ShopIcon({ className }: PixelIconProps) {
+  return (
+    <svg viewBox="0 0 32 32" className={className} fill="currentColor" aria-hidden="true">
+      <path d="M2 10h28l-3-7H5z" />
+      <rect x="2" y="10" width="28" height="6" />
+      <rect x="4" y="16" width="24" height="14" />
+      <rect x="6" y="18" width="6" height="5" fill="#fffdf5" />
+      <rect x="14" y="18" width="6" height="5" fill="#fffdf5" />
+      <rect x="22" y="18" width="4" height="12" fill="#fffdf5" />
+      <rect x="6" y="23" width="6" height="7" fill="#fffdf5" />
+      <rect x="14" y="23" width="6" height="7" fill="#fffdf5" />
+    </svg>
+  );
+}
+
+export function TrophyIcon({ className }: PixelIconProps) {
+  return (
+    <svg viewBox="0 0 32 32" className={className} fill="currentColor" aria-hidden="true">
+      <path d="M4 6h5v2H6v3c0 3.5 2.5 6 6 7.5V20h8v-1.5c3.5-1.5 6-4 6-7.5V8h-3V6h5v5c0 5-4 8-9 8.5V22h6v4h-5v2h-8v-2h-5v-4h6v-2.5C8 19 4 16 4 11z" />
+    </svg>
+  );
+}
+
+export function BellIcon({ className }: PixelIconProps) {
+  return (
+    <svg viewBox="0 0 32 32" className={className} fill="currentColor" aria-hidden="true">
+      <path d="M16 2c5 0 9 4 9 9v6l4 5H3l4-5v-6c0-5 4-9 9-9z" />
+      <rect x="13" y="24" width="6" height="5" />
+    </svg>
+  );
+}
+
+export function NoteIcon({ className }: PixelIconProps) {
+  return (
+    <svg viewBox="0 0 32 32" className={className} fill="currentColor" aria-hidden="true">
+      <rect x="4" y="2" width="24" height="28" fill="#fffdf5" />
+      <path d="M6 6h20v4H6z" fill="#ffd700" />
+      <path d="M6 14h20v2H6z" />
+      <path d="M6 20h20v2H6z" />
+      <rect x="4" y="2" width="24" height="28" fill="none" stroke="currentColor" strokeWidth="3" />
+    </svg>
+  );
+}
+
+export function ShareIcon({ className }: PixelIconProps) {
+  return (
+    <svg viewBox="0 0 32 32" className={className} fill="currentColor" aria-hidden="true">
+      <circle cx="6" cy="16" r="4" />
+      <circle cx="26" cy="7" r="4" />
+      <circle cx="26" cy="25" r="4" />
+      <path d="M9.5 14.5l13-6M9.5 17.5l13 6" stroke="currentColor" strokeWidth="3" />
+    </svg>
+  );
+}

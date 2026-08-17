@@ -36,6 +36,16 @@ export const RARITY_WEIGHTS: Record<Rarity, number> = {
   legendary: 3,
 };
 
+export const SELL_PRICES: Record<Rarity, number> = {
+  common: 25,
+  uncommon: 50,
+  rare: 100,
+  epic: 250,
+  legendary: 600,
+};
+
+export const BUY_COST = 120;
+
 export function rollItem(): ItemDef {
   const entries = Object.entries(RARITY_WEIGHTS) as [Rarity, number][];
   const total = entries.reduce((sum, [, weight]) => sum + weight, 0);

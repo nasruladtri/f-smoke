@@ -151,6 +151,15 @@ export default function TimeTracker({
                 {t("confirm_reset")}
               </button>
             </div>
+            <button
+              onClick={handleReset}
+              className="pixel-btn mt-3 w-full bg-black text-white"
+            >
+              {t("tt_relapse")} — {t("tt_relapse_confirm")}
+            </button>
+            <p className="mt-2 font-retro text-lg text-black/60">
+              {t("tt_relapse_text")}
+            </p>
           </div>
         </div>
       )}

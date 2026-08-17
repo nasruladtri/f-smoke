@@ -4,26 +4,44 @@ import { useState } from "react";
 import { signOut } from "@/app/actions";
 import { useLanguage } from "@/lib/i18n";
 import { SOCIALS } from "@/lib/socials";
+import { ITEMS } from "@/lib/items";
+import { ItemIcon, rarityBg, rarityColor } from "@/components/PixelItems";
 import {
+  BellIcon,
   GlobeIcon,
   LogoutIcon,
   MusicIcon,
   SettingIcon,
   UserIcon,
 } from "@/components/PixelIcons";
+import type { OwnedItem } from "@/components/screens/InventoryScreen";
 
 interface SettingsScreenProps {
   musicOn: boolean;
   onToggleMusic: () => void;
+  sfxOn: boolean;
+  onToggleSfx: () => void;
+  notifOn: boolean;
+  onToggleNotif: () => void;
   displayName: string;
   onSaveDisplayName: (name: string) => Promise<boolean>;
+  avatarItemId: string | null;
+  onSaveAvatar: (itemId: string | null) => Promise<boolean>;
+  inventory: OwnedItem[];
 }
 
 export default function SettingsScreen({
   musicOn,
   onToggleMusic,
+  sfxOn,
+  onToggleSfx,
+  notifOn,
+  onToggleNotif,
   displayName,
   onSaveDisplayName,
+  avatarItemId,
+  onSaveAvatar,
+  inventory,
 }: SettingsScreenProps) {
   const { lang, setLang, t } = useLanguage();
   const [nameDraft, setNameDraft] = useState(displayName);
@@ -32,6 +50,11 @@ export default function SettingsScreen({
   );
   const [confirmLogout, setConfirmLogout] = useState(false);
 
+  const ownedItems = inventory
+    .filter((i) => i.quantity > 0)
+    .map((i) => ITEMS.find((item) => item.id === i.item_id))
+    .filter((item): item is (typeof ITEMS)[number] => Boolean(item));
+
   const handleSaveName = async () => {
     const name = nameDraft.trim();
     if (!name) return;
@@ -39,6 +62,10 @@ export default function SettingsScreen({
     const ok = await onSaveDisplayName(name);
     setNameStatus(ok ? "saved" : "failed");
     setTimeout(() => setNameStatus("idle"), 2500);
+  };
+
+  const handleSaveAvatar = async (itemId: string | null) => {
+    await onSaveAvatar(itemId);
   };
 
   return (
@@ -70,6 +97,54 @@ export default function SettingsScreen({
             }`}
           >
             {musicOn ? t("on") : t("off")}
+          </button>
+        </div>
+      </section>
+
+      <section className="bg-[#fffdf5] p-4 pixel-frame pixel-shadow">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="grid h-12 w-12 shrink-0 place-items-center border-4 border-black bg-mario-blue text-white">
+              <span className="font-pixel text-[12px]">♪</span>
+            </span>
+            <div>
+              <p className="font-pixel text-[9px] text-black">{t("set_sfx")}</p>
+              <p className="font-retro text-lg leading-tight text-black/60">
+                {t("set_sfx_desc")}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onToggleSfx}
+            className={`shrink-0 px-3 py-2 font-pixel text-[8px] border-4 border-black transition-colors ${
+              sfxOn ? "bg-mario-green text-white" : "bg-slate-200 text-black/60"
+            }`}
+          >
+            {sfxOn ? t("on") : t("off")}
+          </button>
+        </div>
+      </section>
+
+      <section className="bg-[#fffdf5] p-4 pixel-frame pixel-shadow">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="grid h-12 w-12 shrink-0 place-items-center border-4 border-black bg-mario-red text-white">
+              <BellIcon className="h-7 w-7" />
+            </span>
+            <div>
+              <p className="font-pixel text-[9px] text-black">{t("set_notif")}</p>
+              <p className="font-retro text-lg leading-tight text-black/60">
+                {t("set_notif_desc")}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onToggleNotif}
+            className={`shrink-0 px-3 py-2 font-pixel text-[8px] border-4 border-black transition-colors ${
+              notifOn ? "bg-mario-green text-white" : "bg-slate-200 text-black/60"
+            }`}
+          >
+            {notifOn ? t("on") : t("off")}
           </button>
         </div>
       </section>
@@ -137,6 +212,62 @@ export default function SettingsScreen({
         )}
         {nameStatus === "failed" && (
           <p className="mt-2 font-retro text-lg text-mario-red">{t("set_failed")}</p>
+        )}
+      </section>
+
+      <section className="bg-[#fffdf5] p-4 pixel-frame pixel-shadow">
+        <div className="flex items-center gap-3">
+          <span className="grid h-12 w-12 shrink-0 place-items-center border-4 border-black bg-purple-600 text-white">
+            {avatarItemId ? (
+              <ItemIcon id={avatarItemId} className="h-8 w-8" />
+            ) : (
+              <UserIcon className="h-7 w-7" />
+            )}
+          </span>
+          <div>
+            <p className="font-pixel text-[9px] text-black">{t("set_avatar")}</p>
+            <p className="font-retro text-lg leading-tight text-black/60">
+              {t("set_avatar_desc")}
+            </p>
+          </div>
+        </div>
+        {ownedItems.length === 0 ? (
+          <p className="mt-4 border-4 border-black bg-slate-100 p-4 text-center font-retro text-lg text-black/50">
+            {t("set_avatar_empty")}
+          </p>
+        ) : (
+          <div className="mt-4 grid grid-cols-5 gap-3">
+            <button
+              onClick={() => handleSaveAvatar(null)}
+              className={`flex flex-col items-center gap-1 border-4 border-black p-2 ${
+                avatarItemId === null ? "bg-mario-yellow" : "bg-white"
+              }`}
+            >
+              <span className="grid h-8 w-8 place-items-center border-2 border-black bg-slate-200 font-pixel text-[7px] text-black/60">
+                X
+              </span>
+              <span className="font-pixel text-[5px] text-black/60">
+                {t("set_avatar_none")}
+              </span>
+            </button>
+            {ownedItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => handleSaveAvatar(item.id)}
+                className={`flex flex-col items-center gap-1 border-4 border-black p-2 transition-transform hover:scale-105 ${
+                  avatarItemId === item.id ? "bg-mario-yellow" : rarityBg(item.rarity)
+                }`}
+              >
+                <ItemIcon
+                  id={item.id}
+                  className={`h-8 w-8 sm:h-10 sm:w-10 ${rarityColor(item.rarity)}`}
+                />
+                <span className="font-pixel text-[5px] text-black/70">
+                  {t(`item_${item.id}_name`)}
+                </span>
+              </button>
+            ))}
+          </div>
         )}
       </section>
 

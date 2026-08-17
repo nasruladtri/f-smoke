@@ -57,6 +57,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="id"
       className={`${montserrat.variable} ${pixel.variable} ${retro.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <meta name="theme-color" content="#1a1a1a" />
+      </head>
       <body className="min-h-full flex flex-col overflow-x-hidden">
         <RetroBackground />
         <div className="relative z-10 flex flex-1 flex-col">{children}</div>
