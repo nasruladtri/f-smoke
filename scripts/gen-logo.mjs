@@ -139,14 +139,35 @@ async function main() {
   writeFileSync(join(root, "src/app/apple-icon.png"), apple);
 
   const faviconPng = await sharp(iconPng).resize(32, 32).png().toBuffer();
+  const faviconBmp = await sharp(iconPng).resize(32, 32).raw().toBuffer();
+  const header = Buffer.alloc(40);
+  header.writeUInt32LE(40, 0);
+  header.writeInt32LE(32, 4);
+  header.writeInt32LE(64, 8);
+  header.writeUInt16LE(1, 12);
+  header.writeUInt16LE(32, 14);
+  header.writeUInt32LE(32 * 32 * 4 + 32 * 4, 20);
+  const xorData = Buffer.alloc(32 * 32 * 4);
+  for (let y = 0; y < 32; y++) {
+    const srcRow = y * 32 * 4;
+    const dstRow = (31 - y) * 32 * 4;
+    for (let x = 0; x < 32; x++) {
+      const s = srcRow + x * 4;
+      const d = dstRow + x * 4;
+      xorData[d] = faviconBmp[s + 2];
+      xorData[d + 1] = faviconBmp[s + 1];
+      xorData[d + 2] = faviconBmp[s];
+      xorData[d + 3] = faviconBmp[s + 3];
+    }
+  }
+  const andMask = Buffer.alloc(32 * 4, 0);
+  const icoBody = Buffer.concat([header, xorData, andMask]);
   const ico = Buffer.concat([
     Buffer.from([0, 0, 1, 0, 1, 0]),
-    Buffer.from([
-      32, 32, 0, 0, 1, 0, 32, 0, 0, 0, 0, 0,
-    ]),
+    Buffer.from([32, 32, 0, 0, 1, 0, 32, 0]),
     (() => {
       const b = Buffer.alloc(4);
-      b.writeUInt32LE(faviconPng.length, 0);
+      b.writeUInt32LE(icoBody.length, 0);
       return b;
     })(),
     (() => {
@@ -154,7 +175,7 @@ async function main() {
       b.writeUInt32LE(22, 0);
       return b;
     })(),
-    faviconPng,
+    icoBody,
   ]);
   writeFileSync(join(root, "src/app/favicon.ico"), ico);
 
