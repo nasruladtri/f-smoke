@@ -3,19 +3,18 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNow } from "@/hooks/useNow";
 import { createClient } from "@/lib/supabase/client";
-import { CHECK_IN_XP, levelFromXp, milestoneXp, timeXp } from "@/lib/levels";
+import { CHECK_IN_XP, levelFromXp, levelProgress, milestoneXp, timeXp } from "@/lib/levels";
 import { rollItem } from "@/lib/items";
 import { elapsedMinutes } from "@/lib/format";
-import TimeTracker from "@/components/TimeTracker";
-import SavingsCalculator from "@/components/SavingsCalculator";
-import HealthTimeline from "@/components/HealthTimeline";
 import SOSButton from "@/components/SOSButton";
 import Footer from "@/components/Footer";
-import ProfileHeader from "@/components/ProfileHeader";
-import LevelCard from "@/components/LevelCard";
-import Inventory, { type OwnedItem } from "@/components/Inventory";
-import CheckInButton from "@/components/CheckInButton";
 import ItemToast, { type Toast } from "@/components/ItemToast";
+import GameTopBar from "@/components/GameTopBar";
+import GameMenuBar, { type GameScreen } from "@/components/GameMenuBar";
+import HomeScreen from "@/components/screens/HomeScreen";
+import TasksScreen from "@/components/screens/TasksScreen";
+import CheckInScreen from "@/components/screens/CheckInScreen";
+import InventoryScreen, { type OwnedItem } from "@/components/screens/InventoryScreen";
 
 interface ProgressRow {
   quit_at: string | null;
@@ -24,6 +23,7 @@ interface ProgressRow {
   check_in_xp: number;
   last_check_in: string | null;
   last_rewarded_level: number;
+  streak: number;
 }
 
 interface DashboardProps {
@@ -38,6 +38,7 @@ export default function Dashboard({ userId, email }: DashboardProps) {
   const [progress, setProgress] = useState<ProgressRow | null>(null);
   const [inventory, setInventory] = useState<OwnedItem[]>([]);
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const [screen, setScreen] = useState<GameScreen>("home");
   const toastId = useRef(0);
 
   useEffect(() => {
@@ -91,6 +92,7 @@ export default function Dashboard({ userId, email }: DashboardProps) {
     (quitAt ? timeXp(minutes) + milestoneXp(minutes) : 0) +
     (progress?.check_in_xp ?? 0);
   const level = levelFromXp(totalXp);
+  const xpMeta = levelProgress(totalXp);
 
   useEffect(() => {
     if (!progress || !quitAt) return;
@@ -163,11 +165,25 @@ export default function Dashboard({ userId, email }: DashboardProps) {
     const newXp = progress.check_in_xp + CHECK_IN_XP;
     const lastCheckIn = new Date().toISOString();
 
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const last = progress.last_check_in
+      ? new Date(progress.last_check_in)
+      : null;
+    const newStreak =
+      last && last.toDateString() === yesterday.toDateString()
+        ? (progress.streak ?? 0) + 1
+        : 1;
+
     void (async () => {
       await supabase.rpc("add_item", { p_item_id: item.id });
       await supabase
         .from("user_progress")
-        .update({ check_in_xp: newXp, last_check_in: lastCheckIn })
+        .update({
+          check_in_xp: newXp,
+          last_check_in: lastCheckIn,
+          streak: newStreak,
+        })
         .eq("user_id", userId);
 
       const { data: inv } = await supabase
@@ -177,7 +193,14 @@ export default function Dashboard({ userId, email }: DashboardProps) {
       if (inv) setInventory(inv as OwnedItem[]);
 
       setProgress((p) =>
-        p ? { ...p, check_in_xp: newXp, last_check_in: lastCheckIn } : p
+        p
+          ? {
+              ...p,
+              check_in_xp: newXp,
+              last_check_in: lastCheckIn,
+              streak: newStreak,
+            }
+          : p
       );
       setToasts((prev) => [
         ...prev,
@@ -192,37 +215,52 @@ export default function Dashboard({ userId, email }: DashboardProps) {
 
   return (
     <>
-      <main className="mx-auto w-full max-w-lg flex-1 space-y-6 px-4 py-6 sm:py-10">
-        <header className="space-y-2 text-center">
-          <h1 className="font-pixel text-xl text-white pixel-outline sm:text-2xl">
-            F-SMOKE
-          </h1>
-          <p className="font-retro text-2xl text-black/60">
-            Pantau progres bebas rokokmu, hari demi hari.
-          </p>
-        </header>
+      <GameTopBar
+        email={email}
+        level={level}
+        xp={totalXp}
+        xpProgress={xpMeta.progress}
+      />
 
-        <ProfileHeader email={email} level={level} />
-
+      <main className="mx-auto w-full max-w-lg flex-1 px-4 pb-32 pt-20 sm:py-24">
         {!progress ? (
-          <section className="bg-[#fffdf5] p-6 text-center text-black pixel-frame pixel-shadow">
-            <p className="font-retro text-2xl">MEMUAT DATA...</p>
+          <section className="mt-10 bg-[#fffdf5] p-6 text-center text-black pixel-frame pixel-shadow">
+            <p className="animate-pulse font-retro text-2xl">
+              MEMUAT DUNIA GAME...
+            </p>
           </section>
         ) : (
-          <>
-            <LevelCard xp={totalXp} />
-            <CheckInButton checkedInToday={checkedInToday} onCheckIn={handleCheckIn} />
-            <TimeTracker quitAt={quitAt} now={now} onSetQuitAt={handleSetQuitAt} />
-            <SavingsCalculator
-              quitAt={quitAt}
-              now={now}
-              pricePerPack={progress.price_per_pack}
-              cigsPerDay={progress.cigs_per_day}
-              onSettingsChange={handleSettingsChange}
-            />
-            <HealthTimeline quitAt={quitAt} now={now} />
-            <Inventory items={inventory} />
-          </>
+          <div key={screen} className="screen-fade">
+            {screen === "home" && (
+              <HomeScreen
+                level={level}
+                xp={totalXp}
+                xpProgress={xpMeta.progress}
+                streak={progress.streak ?? 0}
+                quitAt={quitAt}
+                now={now}
+                onSetQuitAt={handleSetQuitAt}
+                pricePerPack={progress.price_per_pack}
+                cigsPerDay={progress.cigs_per_day}
+                onSettingsChange={handleSettingsChange}
+              />
+            )}
+            {screen === "tasks" && (
+              <TasksScreen
+                minutes={minutes}
+                checkedInToday={checkedInToday}
+                streak={progress.streak ?? 0}
+              />
+            )}
+            {screen === "checkin" && (
+              <CheckInScreen
+                checkedInToday={checkedInToday}
+                streak={progress.streak ?? 0}
+                onCheckIn={handleCheckIn}
+              />
+            )}
+            {screen === "inventory" && <InventoryScreen items={inventory} />}
+          </div>
         )}
 
         <SOSButton />
@@ -231,6 +269,8 @@ export default function Dashboard({ userId, email }: DashboardProps) {
       {toasts.map((toast) => (
         <ItemToast key={toast.id} toast={toast} />
       ))}
+
+      <GameMenuBar active={screen} onChange={setScreen} />
 
       <Footer />
     </>

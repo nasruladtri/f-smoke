@@ -242,3 +242,18 @@ body {
 .animate-breathe-text-alt {
   animation: breathe-text-alt 8s ease-in-out infinite;
 }
+
+@keyframes pixelFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.screen-fade {
+  animation: pixelFadeIn 0.25s steps(6, end);
+}

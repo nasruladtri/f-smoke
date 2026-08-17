@@ -28,9 +28,13 @@ create table if not exists public.user_progress (
   check_in_xp int not null default 0,
   last_check_in timestamptz,
   last_rewarded_level int not null default 1,
+  streak int not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- upgrade DB lama: tambahkan kolom streak
+alter table public.user_progress add column if not exists streak int not null default 0;
 
 alter table public.user_progress enable row level security;
 
