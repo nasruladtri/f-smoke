@@ -234,7 +234,7 @@ function LoginForm() {
         </blockquote>
       </section>
 
-      <p className="absolute bottom-4 left-0 right-0 text-center font-pixel text-[7px] text-black/50 sm:text-[8px]">
+      <p className="mt-6 text-center font-pixel text-[7px] text-black/50 sm:text-[8px]">
         PRESENTED BY NASRUL ADITRI
       </p>
 

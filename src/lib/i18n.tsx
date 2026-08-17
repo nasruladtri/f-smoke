@@ -133,6 +133,14 @@ const DICTIONARY: Record<Language, Record<string, string>> = {
     set_failed: "Gagal menyimpan.",
     on: "NYALA",
     off: "MATI",
+    set_links: "TAUTAN",
+    set_links_desc: "Website & media sosial pembuat.",
+    website: "WEBSITE",
+    github: "GITHUB",
+    instagram: "INSTAGRAM",
+    linkedin: "LINKEDIN",
+    youtube: "YOUTUBE",
+    whatsapp: "WHATSAPP",
 
     item_coin_name: "Koin Emas",
     item_coin_desc:
@@ -283,6 +291,14 @@ const DICTIONARY: Record<Language, Record<string, string>> = {
     set_failed: "Failed to save.",
     on: "ON",
     off: "OFF",
+    set_links: "LINKS",
+    set_links_desc: "Creator's website & social media.",
+    website: "WEBSITE",
+    github: "GITHUB",
+    instagram: "INSTAGRAM",
+    linkedin: "LINKEDIN",
+    youtube: "YOUTUBE",
+    whatsapp: "WHATSAPP",
 
     item_coin_name: "Gold Coin",
     item_coin_desc:

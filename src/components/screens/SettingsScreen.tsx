@@ -18,6 +18,15 @@ interface SettingsScreenProps {
   onSaveDisplayName: (name: string) => Promise<boolean>;
 }
 
+const SOCIALS = [
+  { labelKey: "website", href: "https://nasruladitri.space" },
+  { labelKey: "github", href: "https://github.com/nasruladtri" },
+  { labelKey: "instagram", href: "https://www.instagram.com/nasruladt" },
+  { labelKey: "linkedin", href: "https://www.linkedin.com/in/nasruladitri" },
+  { labelKey: "youtube", href: "https://www.youtube.com/@nasruladitri" },
+  { labelKey: "whatsapp", href: "https://wa.me/6285784699144" },
+];
+
 export default function SettingsScreen({
   musicOn,
   onToggleMusic,
@@ -161,9 +170,39 @@ export default function SettingsScreen({
         </div>
       </section>
 
+      <section className="bg-[#fffdf5] p-4 pixel-frame pixel-shadow">
+        <div className="flex items-center gap-3">
+          <span className="grid h-12 w-12 shrink-0 place-items-center border-4 border-black bg-mario-blue text-white">
+            <GlobeIcon className="h-7 w-7" />
+          </span>
+          <div>
+            <p className="font-pixel text-[9px] text-black">{t("set_links")}</p>
+            <p className="font-retro text-lg leading-tight text-black/60">
+              {t("set_links_desc")}
+            </p>
+          </div>
+        </div>
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          {SOCIALS.map(({ labelKey, href }) => (
+            <a
+              key={labelKey}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pixel-btn bg-white text-black text-center"
+            >
+              {t(labelKey)}
+            </a>
+          ))}
+        </div>
+      </section>
+
       <section className="bg-[#fffdf5] p-4 text-center pixel-frame pixel-shadow">
         <p className="flex items-center justify-center gap-2 font-pixel text-[8px] text-black/50">
           <SettingIcon className="h-4 w-4" /> F-SMOKE
+        </p>
+        <p className="mt-2 font-pixel text-[7px] text-black/40">
+          PRESENTED BY NASRUL ADITRI
         </p>
       </section>
 
