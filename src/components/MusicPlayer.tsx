@@ -4,6 +4,11 @@ import { useEffect, useRef } from "react";
 
 export default function MusicPlayer({ enabled }: { enabled: boolean }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const enabledRef = useRef(enabled);
+
+  useEffect(() => {
+    enabledRef.current = enabled;
+  });
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -26,7 +31,7 @@ export default function MusicPlayer({ enabled }: { enabled: boolean }) {
     const audio = audioRef.current;
     if (!audio) return;
     const tryPlay = () => {
-      if (audio.paused) audio.play().catch(() => {});
+      if (enabledRef.current && audio.paused) audio.play().catch(() => {});
     };
     window.addEventListener("pointerdown", tryPlay, { once: true });
     window.addEventListener("keydown", tryPlay, { once: true });
@@ -34,7 +39,7 @@ export default function MusicPlayer({ enabled }: { enabled: boolean }) {
       window.removeEventListener("pointerdown", tryPlay);
       window.removeEventListener("keydown", tryPlay);
     };
-  }, [enabled]);
+  }, []);
 
   return <audio ref={audioRef} src="/theme-song.mp3" preload="auto" />;
 }
