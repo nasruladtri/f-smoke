@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { LanguageProvider, useLanguage } from "@/lib/i18n";
 import MusicPlayer from "@/components/MusicPlayer";
 import { QUOTES, QUOTES_EN } from "@/lib/content";
+import { SOCIALS } from "@/lib/socials";
 
 type Mode = "login" | "register";
 
@@ -232,6 +233,26 @@ function LoginForm() {
         <blockquote className="mt-3 bg-mario-yellow px-3 py-2 font-retro text-lg leading-snug text-black pixel-frame">
           “{quote}”
         </blockquote>
+      </section>
+
+      <section className="mt-6 bg-[#fffdf5] p-4 pixel-frame pixel-shadow">
+        <p className="font-pixel text-[8px] text-mario-blue">{t("set_links")}</p>
+        <p className="mt-1 font-retro text-lg leading-tight text-black/60">
+          {t("set_links_desc")}
+        </p>
+        <div className="mt-3 grid grid-cols-2 gap-3">
+          {SOCIALS.map(({ labelKey, href }) => (
+            <a
+              key={labelKey}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pixel-btn bg-white text-black text-center"
+            >
+              {t(labelKey)}
+            </a>
+          ))}
+        </div>
       </section>
 
       <p className="mt-6 text-center font-pixel text-[7px] text-black/50 sm:text-[8px]">

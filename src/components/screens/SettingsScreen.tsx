@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { signOut } from "@/app/actions";
 import { useLanguage } from "@/lib/i18n";
+import { SOCIALS } from "@/lib/socials";
 import {
   GlobeIcon,
   LogoutIcon,
@@ -17,15 +18,6 @@ interface SettingsScreenProps {
   displayName: string;
   onSaveDisplayName: (name: string) => Promise<boolean>;
 }
-
-const SOCIALS = [
-  { labelKey: "website", href: "https://nasruladitri.space" },
-  { labelKey: "github", href: "https://github.com/nasruladtri" },
-  { labelKey: "instagram", href: "https://www.instagram.com/nasruladt" },
-  { labelKey: "linkedin", href: "https://www.linkedin.com/in/nasruladitri" },
-  { labelKey: "youtube", href: "https://www.youtube.com/@nasruladitri" },
-  { labelKey: "whatsapp", href: "https://wa.me/6285784699144" },
-];
 
 export default function SettingsScreen({
   musicOn,
