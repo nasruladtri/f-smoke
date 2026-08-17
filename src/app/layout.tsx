@@ -26,9 +26,29 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "F-Smoke — Pantau Progres Berhenti Merokok",
+  metadataBase: new URL("https://f-smoke.nasruladitri.space"),
+  title: {
+    default: "F-Smoke — Game Berhenti Merokok",
+    template: "%s | F-Smoke",
+  },
   description:
-    "Lacak waktu bebas rokok, uang yang dihemat, dan timeline pemulihan kesehatanmu.",
+    "F-Smoke adalah game berhenti merokok: kumpulkan XP dari waktu bebas rokok, selesaikan misi penyelamatan, dan kumpulkan item langka setiap hari.",
+  applicationName: "F-Smoke",
+  openGraph: {
+    type: "website",
+    url: "https://f-smoke.nasruladitri.space",
+    siteName: "F-Smoke",
+    locale: "id_ID",
+    title: "F-Smoke — Game Berhenti Merokok",
+    description:
+      "Kumpulkan XP dari waktu bebas rokok, selesaikan misi penyelamatan, dan kumpulkan item langka setiap hari.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "F-Smoke — Game Berhenti Merokok",
+    description:
+      "Kumpulkan XP dari waktu bebas rokok, selesaikan misi penyelamatan, dan kumpulkan item langka setiap hari.",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

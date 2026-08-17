@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { LanguageProvider, useLanguage } from "@/lib/i18n";
@@ -108,12 +109,24 @@ function LoginForm() {
       </div>
 
       <div className="w-full bg-[#fffdf5] p-6 text-black pixel-frame pixel-shadow sm:p-8">
-        <h1 className="text-center font-pixel text-sm text-mario-red [text-shadow:2px_2px_0_#000] sm:text-base">
-          F-SMOKE
-        </h1>
-        <p className="mt-2 text-center font-retro text-xl text-black/60">
-          {mode === "login" ? t("login_welcome") : t("login_start")}
-        </p>
+        <div className="flex items-center justify-center gap-4">
+          <Image
+            src="/logo.png"
+            alt="F-Smoke logo"
+            width={72}
+            height={72}
+            unoptimized
+            className="pixelated"
+          />
+          <div>
+            <h1 className="font-pixel text-sm text-mario-red [text-shadow:2px_2px_0_#000] sm:text-base">
+              F-SMOKE
+            </h1>
+            <p className="mt-1 font-retro text-lg text-black/60 sm:text-xl">
+              {mode === "login" ? t("login_welcome") : t("login_start")}
+            </p>
+          </div>
+        </div>
 
         <div className="mt-6 grid grid-cols-2 gap-3">
           {(["login", "register"] as Mode[]).map((m) => (
