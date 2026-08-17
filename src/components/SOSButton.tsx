@@ -27,7 +27,7 @@ export default function SOSButton() {
     <>
       <button
         onClick={openSos}
-        className="fixed bottom-5 right-5 z-40 flex h-16 w-16 items-center justify-center bg-mario-red font-pixel text-[10px] text-white pixel-frame pixel-shadow-sm transition-transform active:translate-y-0.5"
+        className="fixed bottom-20 right-5 z-40 flex h-16 w-16 items-center justify-center bg-mario-red font-pixel text-[10px] text-white pixel-frame pixel-shadow-sm transition-transform active:translate-y-0.5"
         aria-label="Tombol SOS darurat"
       >
         SOS

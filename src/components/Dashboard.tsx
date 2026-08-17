@@ -7,7 +7,6 @@ import { CHECK_IN_XP, levelFromXp, levelProgress, milestoneXp, timeXp } from "@/
 import { rollItem } from "@/lib/items";
 import { elapsedMinutes } from "@/lib/format";
 import SOSButton from "@/components/SOSButton";
-import Footer from "@/components/Footer";
 import ItemToast, { type Toast } from "@/components/ItemToast";
 import GameTopBar from "@/components/GameTopBar";
 import GameMenuBar, { type GameScreen } from "@/components/GameMenuBar";
@@ -222,7 +221,7 @@ export default function Dashboard({ userId, email }: DashboardProps) {
         xpProgress={xpMeta.progress}
       />
 
-      <main className="mx-auto w-full max-w-lg flex-1 px-4 pb-32 pt-20 sm:py-24">
+      <main className="mx-auto w-full max-w-lg flex-1 px-4 pb-28 pt-20 sm:py-24">
         {!progress ? (
           <section className="mt-10 bg-[#fffdf5] p-6 text-center text-black pixel-frame pixel-shadow">
             <p className="animate-pulse font-retro text-2xl">
@@ -271,8 +270,6 @@ export default function Dashboard({ userId, email }: DashboardProps) {
       ))}
 
       <GameMenuBar active={screen} onChange={setScreen} />
-
-      <Footer />
     </>
   );
 }
