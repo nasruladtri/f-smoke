@@ -1,7 +1,7 @@
 "use client";
 
 import { elapsedMinutes, formatIDR, formatNumber } from "@/lib/format";
-import { CIGS_PER_PACK } from "@/lib/store";
+import { CIGS_PER_PACK } from "@/lib/content";
 
 interface SavingsCalculatorProps {
   quitAt: Date | null;
