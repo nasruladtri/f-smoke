@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { LanguageProvider, useLanguage } from "@/lib/i18n";
+import MusicPlayer from "@/components/MusicPlayer";
 
 type Mode = "login" | "register";
 
@@ -18,6 +19,22 @@ function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [musicOn, setMusicOn] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    return window.localStorage.getItem("f-smoke.music") !== "0";
+  });
+
+  const toggleMusic = () => {
+    setMusicOn((on) => {
+      const next = !on;
+      try {
+        window.localStorage.setItem("f-smoke.music", next ? "1" : "0");
+      } catch {
+        // ignore storage errors
+      }
+      return next;
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -80,6 +97,14 @@ function LoginForm() {
             {l.toUpperCase()}
           </button>
         ))}
+        <button
+          onClick={toggleMusic}
+          className={`border-4 border-black px-2 py-1 font-pixel text-[8px] ${
+            musicOn ? "bg-mario-green text-white" : "bg-white/80 text-black/60"
+          }`}
+        >
+          {musicOn ? "♪ ON" : "♪ OFF"}
+        </button>
       </div>
 
       <div className="w-full bg-[#fffdf5] p-6 text-black pixel-frame pixel-shadow sm:p-8">
@@ -191,6 +216,12 @@ function LoginForm() {
           </button>
         </form>
       </div>
+
+      <p className="absolute bottom-4 left-0 right-0 text-center font-pixel text-[7px] text-black/50 sm:text-[8px]">
+        PRESENTED BY NASRUL ADITRI
+      </p>
+
+      <MusicPlayer enabled={musicOn} />
     </main>
   );
 }
