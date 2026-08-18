@@ -1,5 +1,6 @@
 -- F-Smoke: Level, Reward & Inventory Schema
 -- Jalankan di Supabase Dashboard > SQL Editor
+-- AMAN DIJALANKAN ULANG: semua perintah idempoten (drop jika ada, lalu buat)
 
 -- 1. PROFILES
 create table if not exists public.profiles (
@@ -13,12 +14,15 @@ alter table public.profiles add column if not exists avatar_item_id text;
 
 alter table public.profiles enable row level security;
 
+drop policy if exists "profiles_select_own" on public.profiles;
 create policy "profiles_select_own" on public.profiles
   for select using (auth.uid() = id);
 
+drop policy if exists "profiles_insert_own" on public.profiles;
 create policy "profiles_insert_own" on public.profiles
   for insert with check (auth.uid() = id);
 
+drop policy if exists "profiles_update_own" on public.profiles;
 create policy "profiles_update_own" on public.profiles
   for update using (auth.uid() = id);
 
@@ -44,12 +48,15 @@ alter table public.user_progress add column if not exists coins int not null def
 
 alter table public.user_progress enable row level security;
 
+drop policy if exists "user_progress_select_own" on public.user_progress;
 create policy "user_progress_select_own" on public.user_progress
   for select using (auth.uid() = user_id);
 
+drop policy if exists "user_progress_insert_own" on public.user_progress;
 create policy "user_progress_insert_own" on public.user_progress
   for insert with check (auth.uid() = user_id);
 
+drop policy if exists "user_progress_update_own" on public.user_progress;
 create policy "user_progress_update_own" on public.user_progress
   for update using (auth.uid() = user_id);
 
@@ -65,9 +72,11 @@ create index if not exists check_ins_user_created_idx
 
 alter table public.check_ins enable row level security;
 
+drop policy if exists "check_ins_select_own" on public.check_ins;
 create policy "check_ins_select_own" on public.check_ins
   for select using (auth.uid() = user_id);
 
+drop policy if exists "check_ins_insert_own" on public.check_ins;
 create policy "check_ins_insert_own" on public.check_ins
   for insert with check (auth.uid() = user_id);
 
@@ -84,9 +93,11 @@ create index if not exists cravings_user_created_idx
 
 alter table public.cravings enable row level security;
 
+drop policy if exists "cravings_select_own" on public.cravings;
 create policy "cravings_select_own" on public.cravings
   for select using (auth.uid() = user_id);
 
+drop policy if exists "cravings_insert_own" on public.cravings;
 create policy "cravings_insert_own" on public.cravings
   for insert with check (auth.uid() = user_id);
 
@@ -100,6 +111,7 @@ create table if not exists public.items (
 
 alter table public.items enable row level security;
 
+drop policy if exists "items_select_auth" on public.items;
 create policy "items_select_auth" on public.items
   for select using (auth.role() = 'authenticated');
 
@@ -114,12 +126,15 @@ create table if not exists public.inventory (
 
 alter table public.inventory enable row level security;
 
+drop policy if exists "inventory_select_own" on public.inventory;
 create policy "inventory_select_own" on public.inventory
   for select using (auth.uid() = user_id);
 
+drop policy if exists "inventory_insert_own" on public.inventory;
 create policy "inventory_insert_own" on public.inventory
   for insert with check (auth.uid() = user_id);
 
+drop policy if exists "inventory_update_own" on public.inventory;
 create policy "inventory_update_own" on public.inventory
   for update using (auth.uid() = user_id);
 
